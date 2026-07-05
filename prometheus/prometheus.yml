@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "cliente-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["cliente-service:8081"]
+
+  - job_name: "categoria-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["categoria-service:8082"]
+
+  - job_name: "pedido-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["pedido-service:8083"]
+
+  - job_name: "gateway-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["gateway-service:8090"]

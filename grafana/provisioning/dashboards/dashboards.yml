@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: "Lab 15"
+    orgId: 1
+    folder: "Laboratorio 15"
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      path: /var/lib/grafana/dashboards

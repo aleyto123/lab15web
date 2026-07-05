@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "cliente-service-local"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["localhost:8081"]
+
+  - job_name: "categoria-service-local"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["localhost:8082"]
+
+  - job_name: "pedido-service-local"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["localhost:8083"]
+
+  - job_name: "gateway-service-local"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["localhost:8090"]

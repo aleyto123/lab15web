@@ -1,0 +1,108 @@
+services:
+  config-server:
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+    container_name: lab15-config-server
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config-repo:/config-repo:ro
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    container_name: lab15-eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+    depends_on:
+      - config-server
+
+  cliente-service:
+    build:
+      context: .
+      dockerfile: cliente-service/Dockerfile
+    container_name: lab15-cliente-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+
+  categoria-service:
+    build:
+      context: .
+      dockerfile: categoria-service/Dockerfile
+    container_name: lab15-categoria-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+
+  pedido-service:
+    build:
+      context: .
+      dockerfile: pedido-service/Dockerfile
+    container_name: lab15-pedido-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+    container_name: lab15-gateway-service
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+      - cliente-service
+      - categoria-service
+      - pedido-service
+
+  prometheus:
+    image: prom/prometheus:v2.53.1
+    container_name: lab15-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cliente-service
+      - categoria-service
+      - pedido-service
+      - gateway-service
+
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: lab15-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus

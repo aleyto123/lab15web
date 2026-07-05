@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "Laboratorio 15 - Observabilidad",
+    "description": "Pruebas de Actuator, Prometheus, Eureka, Gateway y endpoints de cliente, categoria y pedido.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "config", "value": "http://localhost:8888" },
+    { "key": "eureka", "value": "http://localhost:8761" },
+    { "key": "gateway", "value": "http://localhost:8090" },
+    { "key": "cliente", "value": "http://localhost:8081" },
+    { "key": "categoria", "value": "http://localhost:8082" },
+    { "key": "pedido", "value": "http://localhost:8083" },
+    { "key": "prometheus", "value": "http://localhost:9090" },
+    { "key": "grafana", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "01 Infraestructura",
+      "item": [
+        { "name": "Config cliente-service", "request": { "method": "GET", "url": "{{config}}/cliente-service/default" } },
+        { "name": "Config categoria-service", "request": { "method": "GET", "url": "{{config}}/categoria-service/default" } },
+        { "name": "Config pedido-service", "request": { "method": "GET", "url": "{{config}}/pedido-service/default" } },
+        { "name": "Eureka dashboard", "request": { "method": "GET", "url": "{{eureka}}" } },
+        { "name": "Gateway health", "request": { "method": "GET", "url": "{{gateway}}/actuator/health" } }
+      ]
+    },
+    {
+      "name": "02 Actuator",
+      "item": [
+        { "name": "Cliente actuator", "request": { "method": "GET", "url": "{{cliente}}/actuator" } },
+        { "name": "Cliente health", "request": { "method": "GET", "url": "{{cliente}}/actuator/health" } },
+        { "name": "Cliente metrics", "request": { "method": "GET", "url": "{{cliente}}/actuator/metrics" } },
+        { "name": "Categoria actuator", "request": { "method": "GET", "url": "{{categoria}}/actuator" } },
+        { "name": "Categoria health", "request": { "method": "GET", "url": "{{categoria}}/actuator/health" } },
+        { "name": "Categoria metrics", "request": { "method": "GET", "url": "{{categoria}}/actuator/metrics" } },
+        { "name": "Pedido actuator", "request": { "method": "GET", "url": "{{pedido}}/actuator" } },
+        { "name": "Pedido health", "request": { "method": "GET", "url": "{{pedido}}/actuator/health" } },
+        { "name": "Pedido metrics", "request": { "method": "GET", "url": "{{pedido}}/actuator/metrics" } }
+      ]
+    },
+    {
+      "name": "03 Prometheus",
+      "item": [
+        { "name": "Cliente prometheus", "request": { "method": "GET", "url": "{{cliente}}/actuator/prometheus" } },
+        { "name": "Categoria prometheus", "request": { "method": "GET", "url": "{{categoria}}/actuator/prometheus" } },
+        { "name": "Pedido prometheus", "request": { "method": "GET", "url": "{{pedido}}/actuator/prometheus" } },
+        { "name": "Prometheus targets", "request": { "method": "GET", "url": "{{prometheus}}/targets" } },
+        { "name": "Prometheus query up", "request": { "method": "GET", "url": "{{prometheus}}/api/v1/query?query=up" } }
+      ]
+    },
+    {
+      "name": "04 Gateway CRUD",
+      "item": [
+        { "name": "Listar clientes", "request": { "method": "GET", "url": "{{gateway}}/api/clientes" } },
+        {
+          "name": "Crear cliente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Rosa Medina\",\n  \"correo\": \"rosa.medina@demo.com\",\n  \"telefono\": \"987555666\"\n}" },
+            "url": "{{gateway}}/api/clientes"
+          }
+        },
+        { "name": "Listar categorias", "request": { "method": "GET", "url": "{{gateway}}/api/categorias" } },
+        {
+          "name": "Crear categoria",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Hogar\",\n  \"descripcion\": \"Productos para el hogar\"\n}" },
+            "url": "{{gateway}}/api/categorias"
+          }
+        },
+        { "name": "Listar pedidos", "request": { "method": "GET", "url": "{{gateway}}/api/pedidos" } },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"clienteId\": 1,\n  \"categoriaId\": 1,\n  \"producto\": \"Monitor 24 pulgadas\",\n  \"cantidad\": 2,\n  \"total\": 1380.00\n}" },
+            "url": "{{gateway}}/api/pedidos"
+          }
+        }
+      ]
+    }
+  ]
+}
